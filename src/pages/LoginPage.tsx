@@ -1,11 +1,12 @@
 // src/pages/LoginPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// Import shadcn/ui components – adjust the import paths based on your project structure.
+import Session from "supertokens-web-js/recipe/session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { signIn } from "supertokens-auth-react/recipe/emailpassword";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,14 +14,35 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
+  // Prevent accessing login page if a session already exists.
+  useEffect(() => {
+    async function checkSession() {
+      if (await Session.doesSessionExist()) {
+        navigate("/");
+      }
     }
-    // TODO: Implement your authentication logic here.
-    navigate("/dashboard");
+    checkSession();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await signIn({
+        formFields: [
+          { id: "email", value: email },
+          { id: "password", value: password },
+        ],
+      });
+      console.log("SignIn response:", response);
+      if (response.status === "OK") {
+        navigate("/");
+      } else {
+        setError("Login failed. Please check your credentials.");
+      }
+    } catch (err) {
+      setError("An error occurred during sign in.");
+      console.error("Sign in error", err);
+    }
   };
 
   return (

@@ -5,18 +5,20 @@ import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
 import AnimeDetailPage from "./pages/AnimeDetailPage";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* Login route without NavBar */}
-        <Route path="/" element={<LoginPage />} />
-        
+        <Route path="/login" element={<LoginPage />} />
         {/* Protected routes with NavBar via Layout */}
-        <Route element={<Layout />}>
-          <Route path="/dashboard" element={<LandingPage />} />
-          <Route path="/anime/:id" element={<AnimeDetailPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/anime/:id" element={<AnimeDetailPage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

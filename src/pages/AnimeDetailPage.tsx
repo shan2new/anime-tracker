@@ -76,7 +76,7 @@ const AnimeDetailPage: React.FC = () => {
       <div className="max-w-3xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <Button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
             className="bg-secondary text-secondary-foreground hover:bg-secondary-dark transition transform hover:scale-105"
           >
             ← Back

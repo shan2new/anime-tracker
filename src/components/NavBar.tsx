@@ -11,11 +11,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "../context/AuthContext";
+import Session from 'supertokens-web-js/recipe/session';
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,6 +41,11 @@ const NavBar: React.FC = () => {
     setSearch("");
     setSearchResults([]);
   };
+
+  async function logout () {
+    await Session.signOut(); 
+    navigate("/login");
+  }
 
   return (
     <nav className="w-full bg-surface shadow-md">
@@ -86,16 +90,14 @@ const NavBar: React.FC = () => {
                         className="w-8 h-12 object-cover rounded"
                       />
                     )}
-                    <span>
-                      {anime.title.english || anime.title.romaji}
-                    </span>
+                    <span>{anime.title.english || anime.title.romaji}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
         </div>
-        {/* Right: Profile Icon */}
+        {/* Right: Profile Icon with Dropdown */}
         <div className="flex-1 flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -126,10 +128,7 @@ const NavBar: React.FC = () => {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => {
-                  logout();
-                  navigate("/");
-                }}
+                onSelect={logout}
               >
                 Logout
               </DropdownMenuItem>
