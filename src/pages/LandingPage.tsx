@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { BookTextIcon, File, FileTextIcon, FolderArchiveIcon, Plus, PlusCircleIcon } from "lucide-react"; // Import icon for the Add Collection button
 
 import { getCollections, createCollectionAPI, Collection } from "../api/collection";
 import CollectionItemCard from "@/components/CollectionItemCard";
@@ -82,7 +83,7 @@ const LandingPage: React.FC = () => {
       {/* Side Navigation */}
       <div className="hidden md:flex md:flex-col w-64 border-r border-border">
         <ScrollArea className="p-4 space-y-4">
-          <div>
+          {/* <div>
             <h2 className="text-lg font-semibold mb-2">Trending Collections</h2>
             <div className="space-y-2">
               {trendingCollectionsMock.map((tc) => (
@@ -100,11 +101,11 @@ const LandingPage: React.FC = () => {
               ))}
             </div>
           </div>
-          <Separator className="my-4" />
+          <Separator className="my-4" /> */}
           <div className="flex flex-col space-y-4">
             <div>
               <h2 className="text-lg font-semibold mb-2">My Collections</h2>
-              <div className="space-y-2">
+              <div className="w-full">
                 {collections.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
                     No collections yet.
@@ -113,24 +114,30 @@ const LandingPage: React.FC = () => {
                   collections.map((col) => (
                     <Button
                       key={col.id}
-                      variant={
-                        selectedCollection?.id === col.id ? "default" : "ghost"
-                      }
-                      className="justify-start"
+                      variant="ghost"
+                      className={`justify-start w-full flex items-center space-x-1 ${
+                        selectedCollection?.id === col.id ? "bg-gray-100" : ""
+                      }`}
                       onClick={() => handleSelectCollection(col)}
                     >
-                      {col.name || "Untitled"}
+                      <BookTextIcon size={16} />
+                      <span>{col.name || "Untitled"}</span>
                     </Button>
                   ))
                 )}
               </div>
             </div>
+            <div className="items-center justify-items-center">
             <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center"
               onClick={() => setShowCreateModal(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary-dark transition rounded-lg"
             >
-              Add Collection
+              <PlusCircleIcon size={16} /> {/* Icon for Add Collection button */}
+              <span className="text-xs">Add Collection</span>
             </Button>
+            </div>
           </div>
         </ScrollArea>
       </div>
@@ -140,7 +147,7 @@ const LandingPage: React.FC = () => {
         {/* Top Bar */}
         <div className="flex items-center justify-between p-4">
           <h1 className="text-xl font-bold">
-            {selectedCollection?.name || "Listen Now"} 
+            {selectedCollection?.name || "Collection"} 
           </h1>
           {selectedCollection && (
             <Button onClick={() => console.log("Edit Collection")}>
