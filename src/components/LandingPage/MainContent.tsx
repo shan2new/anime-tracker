@@ -5,6 +5,7 @@ import AnimeList from "./MainContent/AnimeList";
 import EmptyState from "./MainContent/EmptyState";
 import AddAnimeDialog from "./MainContent/AddAnimeDialog";
 import { CollectionItem } from "@/api/collection";
+import CollectionEmptyState from "./MainContent/CollectionEmptyState";
 
 interface AnimeResult {
   id: number;
@@ -38,13 +39,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   if (!hasCollectionSelected) {
-    return (
-      <div className="flex flex-col items-center justify-center space-y-4">
-        <p className="text-sm text-muted-foreground">
-          No collection selected. Create one or select from the side nav.
-        </p>
-      </div>
-    );
+    return <CollectionEmptyState />;
   }
 
   return (

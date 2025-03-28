@@ -28,7 +28,7 @@ const SideNav: React.FC<SideNavProps> = ({
             <h2 className="text-lg font-semibold mb-2">My Collections</h2>
             <div className="w-full">
               {collections.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No collections yet.</p>
+                null
               ) : (
                 collections.map((col) => (
                   <div
