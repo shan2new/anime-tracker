@@ -52,20 +52,8 @@ const MainContent: React.FC<MainContentProps> = ({
       {collectionItems.length === 0 ? (
         <EmptyState onAddAnime={onOpenAddAnimeDialog} />
       ) : (
-        <>
-          <AnimeList items={collectionItems} />
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={onOpenAddAnimeDialog}
-              className="bg-primary text-primary-foreground"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add More
-            </Button>
-          </div>
-        </>
+          <AnimeList items={collectionItems} onAddNew={onOpenAddAnimeDialog} />
       )}
-      {/* Always render the AddAnimeDialog */}
       <AddAnimeDialog
         open={showAddAnimeDialog}
         onOpenChange={setShowAddAnimeDialog}
