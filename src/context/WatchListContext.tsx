@@ -5,6 +5,13 @@ interface Anime {
   id: number;
   title: { romaji: string; english?: string };
   nextAiringEpisode?: { airingAt: number };
+  season: string;
+  seasonYear: number;
+  coverImage: {
+    extraLarge: string;
+    large: string;
+    medium: string;
+  };
 }
 
 interface WatchListContextType {

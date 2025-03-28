@@ -1,4 +1,3 @@
-// src/components/NavBar.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchAnime } from "../api/anilist";
@@ -48,13 +47,12 @@ const NavBar: React.FC = () => {
   }
 
   return (
-    <nav className="w-full bg-surface shadow-md">
+    <nav className="w-full bg-surface">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Header */}
-        <div className="flex-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-primary font-sans">
-            Anime Tracker
-          </h1>
+        <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
+          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-14" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="h-8" />
         </div>
         {/* Center: Search */}
         <div className="flex-1 px-4">

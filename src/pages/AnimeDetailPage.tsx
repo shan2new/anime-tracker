@@ -7,7 +7,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import moment from "moment";
-import { Loader } from "@/components/ui/loader"; // Use the shadcn loader
+import { Loader } from "@/components/ui/loader";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { getCollections, addItemToCollectionAPI } from "../api/collection";
 
 interface Anime {
   id: number;
@@ -32,6 +42,11 @@ const AnimeDetailPage: React.FC = () => {
   const { watchList, addToWatchList, removeFromWatchList } = useWatchList();
   const navigate = useNavigate();
 
+  // For Add to Collection modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userCollections, setUserCollections] = useState<any[]>([]);
+  const [loadingCollections, setLoadingCollections] = useState(false);
+
   useEffect(() => {
     const loadAnime = async () => {
       if (!id) return;
@@ -47,8 +62,27 @@ const AnimeDetailPage: React.FC = () => {
     loadAnime();
   }, [id]);
 
+  const fetchUserCollections = async () => {
+    setLoadingCollections(true);
+    try {
+      const collections = await getCollections();
+      setUserCollections(collections);
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+    } finally {
+      setLoadingCollections(false);
+    }
+  };
+
+  // When modal opens, fetch collections
+  useEffect(() => {
+    if (isModalOpen) {
+      fetchUserCollections();
+    }
+  }, [isModalOpen]);
+
   if (loading) {
-    return <Loader />; // Using the shadcn loader
+    return <Loader />;
   }
   if (!anime) {
     return (
@@ -58,7 +92,7 @@ const AnimeDetailPage: React.FC = () => {
     );
   }
 
-  // Check if the anime is already in the watchlist
+  // Check if the anime is in the watchlist
   const isWatched = watchList.some((a) => a.id === anime.id);
 
   const handleWatchToggle = () => {
@@ -68,6 +102,22 @@ const AnimeDetailPage: React.FC = () => {
     } else {
       addToWatchList(anime);
       toast.success("Added to Watch List");
+    }
+  };
+
+  const handleAddToCollection = async (collectionId: number) => {
+    try {
+      const payload = {
+        anilistId: anime.id,
+        animeTitle: anime.title.english || anime.title.romaji,
+        coverImage: anime.coverImage, // optionally include coverImage
+      };
+      await addItemToCollectionAPI(collectionId, payload);
+      toast.success("Anime added to collection");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error adding to collection:", error);
+      toast.error("Failed to add anime to collection");
     }
   };
 
@@ -149,12 +199,56 @@ const AnimeDetailPage: React.FC = () => {
                 </p>
               )}
             </section>
-            <Button
-              onClick={handleWatchToggle}
-              className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary-dark transition transform hover:scale-105"
-            >
-              {isWatched ? "Unwatch" : "Add to Watch List"}
-            </Button>
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={handleWatchToggle}
+                className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary-dark transition transform hover:scale-105"
+              >
+                {isWatched ? "Unwatch" : "Add to Watch List"}
+              </Button>
+              <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    className="w-full py-3 bg-secondary text-secondary-foreground hover:bg-secondary-dark transition transform hover:scale-105"
+                  >
+                    Add to Collection
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Select a Collection</DialogTitle>
+                    <DialogDescription>
+                      Choose one of your collections to add this anime.
+                    </DialogDescription>
+                  </DialogHeader>
+                  {loadingCollections ? (
+                    <p className="text-center">Loading collections...</p>
+                  ) : userCollections.length === 0 ? (
+                    <p className="text-center text-muted-foreground">
+                      You have no collections.
+                    </p>
+                  ) : (
+                    <div className="mt-4 space-y-2">
+                      {userCollections.map((col) => (
+                        <Button
+                          key={col.id}
+                          variant="outline"
+                          onClick={() => handleAddToCollection(col.id)}
+                          className="w-full justify-start"
+                        >
+                          {col.name || "Untitled Collection"}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                  <DialogClose asChild>
+                    <Button variant="outline" className="mt-4 w-full">
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
+            </div>
           </CardContent>
         </Card>
       </div>
