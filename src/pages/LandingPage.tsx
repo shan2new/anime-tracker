@@ -3,25 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { BookTextIcon, File, FileTextIcon, FolderArchiveIcon, Plus, PlusCircleIcon } from "lucide-react"; // Import icon for the Add Collection button
+import { BookTextIcon, PlusCircleIcon } from "lucide-react"; // Import icon for the Add Collection button
 
 import { getCollections, createCollectionAPI, Collection } from "../api/collection";
 import CollectionItemCard from "@/components/CollectionItemCard";
 
-interface TrendingCollection {
-  id: number;
-  name: string;
-  cover?: string;
-}
-
-// Placeholder trending data for demonstration
-const trendingCollectionsMock: TrendingCollection[] = [
-  { id: 1, name: "Seasonal Hits", cover: "/demo/seasonal.png" },
-  { id: 2, name: "Popular Now", cover: "/demo/popular.png" },
-  { id: 3, name: "Hidden Gems", cover: "/demo/gems.png" },
-];
 
 const LandingPage: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -31,8 +18,6 @@ const LandingPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
-  const navigate = useNavigate();
 
   // Fetch user’s collections from your API
   const fetchCollections = async () => {
@@ -83,25 +68,6 @@ const LandingPage: React.FC = () => {
       {/* Side Navigation */}
       <div className="hidden md:flex md:flex-col w-64 border-r border-border">
         <ScrollArea className="p-4 space-y-4">
-          {/* <div>
-            <h2 className="text-lg font-semibold mb-2">Trending Collections</h2>
-            <div className="space-y-2">
-              {trendingCollectionsMock.map((tc) => (
-                <Button
-                  key={tc.id}
-                  variant="ghost"
-                  className="justify-start"
-                  onClick={() => {
-                    // placeholder click
-                    console.log(`Clicked trending: ${tc.name}`);
-                  }}
-                >
-                  {tc.name}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <Separator className="my-4" /> */}
           <div className="flex flex-col space-y-4">
             <div>
               <h2 className="text-lg font-semibold mb-2">My Collections</h2>
