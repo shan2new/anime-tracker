@@ -95,7 +95,6 @@ const LandingPage: React.FC = () => {
     }
   };
 
-  // SideNav callbacks
   const handleSelectCollection = (col: Collection) => {
     setSelectedCollection(col);
   };
@@ -130,6 +129,7 @@ const LandingPage: React.FC = () => {
           loading={loading}
           hasCollectionSelected={!!selectedCollection}
           collectionItems={selectedCollection?.items || []}
+          collectionCreateHandler={handleOpenCreateModal}          
         />
       </div>
 

@@ -18,6 +18,7 @@ interface MainContentProps {
   hasCollectionSelected: boolean;
   collectionItems: CollectionItem[];
   onAddAnimeToCollection: (pending: AnimeResult[]) => Promise<void>;
+  collectionCreateHandler: () => void;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
@@ -25,6 +26,7 @@ const MainContent: React.FC<MainContentProps> = ({
   hasCollectionSelected,
   collectionItems,
   onAddAnimeToCollection,
+  collectionCreateHandler,
 }) => {
   const [showAddAnimeDialog, setShowAddAnimeDialog] = useState(false);
 
@@ -39,7 +41,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   if (!hasCollectionSelected) {
-    return <CollectionEmptyState />;
+    return <CollectionEmptyState collectionCreateHandler={collectionCreateHandler} />;
   }
 
   return (
