@@ -1,7 +1,6 @@
 // src/pages/AnimeDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useWatchList } from "../context/WatchListContext";
 import { fetchAnimeById } from "../api/anilist";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +38,6 @@ const AnimeDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [anime, setAnime] = useState<Anime | null>(null);
   const [loading, setLoading] = useState(true);
-  const { watchList, addToWatchList, removeFromWatchList } = useWatchList();
   const navigate = useNavigate();
 
   // For Add to Collection modal
@@ -92,25 +90,12 @@ const AnimeDetailPage: React.FC = () => {
     );
   }
 
-  // Check if the anime is in the watchlist
-  const isWatched = watchList.some((a) => a.id === anime.id);
-
-  const handleWatchToggle = () => {
-    if (isWatched) {
-      removeFromWatchList(anime.id);
-      toast.success("Removed from Watch List");
-    } else {
-      addToWatchList(anime);
-      toast.success("Added to Watch List");
-    }
-  };
-
   const handleAddToCollection = async (collectionId: number) => {
     try {
       const payload = {
         anilistId: anime.id,
         animeTitle: anime.title.english || anime.title.romaji,
-        coverImage: anime.coverImage, // optionally include coverImage
+        coverImage: anime.coverImage,
       };
       await addItemToCollectionAPI(collectionId, payload);
       toast.success("Anime added to collection");
@@ -200,12 +185,6 @@ const AnimeDetailPage: React.FC = () => {
               )}
             </section>
             <div className="flex flex-col gap-4">
-              <Button
-                onClick={handleWatchToggle}
-                className="w-full py-3 bg-primary text-primary-foreground hover:bg-primary-dark transition transform hover:scale-105"
-              >
-                {isWatched ? "Unwatch" : "Add to Watch List"}
-              </Button>
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger asChild>
                   <Button

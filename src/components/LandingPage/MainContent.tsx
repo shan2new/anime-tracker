@@ -1,22 +1,34 @@
-import React from "react";
-import { Podcast } from "lucide-react";
+import React, { useState } from "react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CollectionItemCard from "@/components/CollectionItemCard";
+import AnimeList from "./MainContent/AnimeList";
+import EmptyState from "./MainContent/EmptyState";
+import AddAnimeDialog from "./MainContent/AddAnimeDialog";
 import { CollectionItem } from "@/api/collection";
+
+interface AnimeResult {
+  id: number;
+  title: { english?: string; romaji: string };
+  coverImage?: { extraLarge?: string; large?: string; medium?: string };
+}
 
 interface MainContentProps {
   loading: boolean;
   hasCollectionSelected: boolean;
   collectionItems: CollectionItem[];
-  onAddItem: () => void;
+  onAddAnimeToCollection: (pending: AnimeResult[]) => Promise<void>;
 }
 
 const MainContent: React.FC<MainContentProps> = ({
   loading,
   hasCollectionSelected,
   collectionItems,
-  onAddItem,
+  onAddAnimeToCollection,
 }) => {
+  const [showAddAnimeDialog, setShowAddAnimeDialog] = useState(false);
+
+  const onOpenAddAnimeDialog = () => setShowAddAnimeDialog(true);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-10">
@@ -24,6 +36,7 @@ const MainContent: React.FC<MainContentProps> = ({
       </div>
     );
   }
+
   if (!hasCollectionSelected) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4">
@@ -33,26 +46,33 @@ const MainContent: React.FC<MainContentProps> = ({
       </div>
     );
   }
-  if (collectionItems.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center space-y-4 mt-10">
-        <Podcast className="w-12 h-12 text-muted-foreground" />
-        <h2 className="text-xl font-semibold">No items added</h2>
-        <p className="text-sm text-muted-foreground">
-          You have not added any animes yet. Add one below.
-        </p>
-        <Button onClick={onAddItem} className="bg-primary text-primary-foreground">
-          Add Anime
-        </Button>
-      </div>
-    );
-  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 transition-all px-4 py-4">
-      {collectionItems.map((item) => (
-        <CollectionItemCard key={item.id} item={item} />
-      ))}
-    </div>
+    <>
+      {collectionItems.length === 0 ? (
+        <EmptyState onAddAnime={onOpenAddAnimeDialog} />
+      ) : (
+        <>
+          <AnimeList items={collectionItems} />
+          <div className="flex justify-center mt-4">
+            <Button
+              onClick={onOpenAddAnimeDialog}
+              className="bg-primary text-primary-foreground"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add More
+            </Button>
+          </div>
+        </>
+      )}
+      {/* Always render the AddAnimeDialog */}
+      <AddAnimeDialog
+        open={showAddAnimeDialog}
+        onOpenChange={setShowAddAnimeDialog}
+        existingItems={collectionItems}
+        onSave={onAddAnimeToCollection}
+      />
+    </>
   );
 };
 

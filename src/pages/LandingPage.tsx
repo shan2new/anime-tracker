@@ -132,7 +132,6 @@ const LandingPage: React.FC = () => {
           loading={loading}
           hasCollectionSelected={!!selectedCollection}
           collectionItems={selectedCollection?.items || []}
-          onAddItem={() => console.log("Add anime item")}
         />
       </div>
 
