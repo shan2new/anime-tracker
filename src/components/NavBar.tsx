@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { searchAnime } from "../api/anilist";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,29 +10,18 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import Session from 'supertokens-web-js/recipe/session';
+import MobileSearchDialog from '@/components/Navbar/MobileSearchDialog'
+import { SearchIcon } from "lucide-react";
+import { toast } from "sonner";
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
-  // Debounce the search input (500ms)
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (search.trim()) {
-        setLoading(true);
-        searchAnime(search)
-          .then((results) => setSearchResults(results))
-          .catch((error) => console.error("Search failed", error))
-          .finally(() => setLoading(false));
-      } else {
-        setSearchResults([]);
-      }
-    }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [search]);
+  // Your existing search logic for desktop (if needed)
 
   const handleSelectAnime = (id: number) => {
     navigate(`/anime/${id}`);
@@ -41,22 +29,22 @@ const NavBar: React.FC = () => {
     setSearchResults([]);
   };
 
-  async function logout () {
-    await Session.signOut(); 
+  async function logout() {
+    await Session.signOut();
     navigate("/login");
   }
 
   return (
     <nav className="w-full bg-surface">
       <div className="flex items-center justify-between px-4 py-3">
-        {/* Left: Header */}
+        {/* Left: Logo */}
         <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-8" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="h-6" />
+          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="md:h-8 h-16" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8" />
         </div>
-        {/* Center: Search */}
+        {/* Center: Search for desktop */}
         <div className="flex-1 px-4">
-          <div className="relative">
+          <div className="relative hidden sm:block">
             <Input
               type="text"
               placeholder="Search anime..."
@@ -94,8 +82,18 @@ const NavBar: React.FC = () => {
               </ul>
             )}
           </div>
+          {/* Mobile: Show search icon that opens MobileSearchDialog */}
+          <div className="sm:hidden flex justify-center">
+            <Button
+              variant="ghost"
+              onClick={() => setShowMobileSearch(true)}
+              className="p-2"
+            >
+              <SearchIcon size={48} />
+            </Button>
+          </div>
         </div>
-        {/* Right: Profile Icon with Dropdown */}
+        {/* Right: Profile */}
         <div className="flex-1 flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -103,7 +101,6 @@ const NavBar: React.FC = () => {
                 variant="ghost"
                 className="w-10 h-10 rounded-full bg-primary text-primary-foreground focus:ring-2 focus:ring-ring transition transform hover:scale-105"
               >
-                {/* Profile Icon SVG */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -121,19 +118,23 @@ const NavBar: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40 bg-background border border-border rounded-lg shadow-lg">
-              <DropdownMenuItem onSelect={() => navigate("/settings")}>
+              <DropdownMenuItem onSelect={() => toast.info("Unsupported. Coming soon!")}>
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={logout}
-              >
+              <DropdownMenuItem onSelect={logout}>
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+      {/* Mobile Search Dialog */}
+      <MobileSearchDialog
+        open={showMobileSearch}
+        onOpenChange={setShowMobileSearch}
+        onSelectAnime={handleSelectAnime}
+      />
     </nav>
   );
 };

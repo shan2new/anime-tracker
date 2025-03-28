@@ -19,11 +19,9 @@ const LandingPage: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Create collection modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
-
-  // Edit collection dialog
+  
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingName, setEditingName] = useState("");
   const [updating, setUpdating] = useState(false);
