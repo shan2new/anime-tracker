@@ -1,33 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  getCollections,
+  createCollectionAPI,
+  updateCollectionAPI,
+  deleteCollectionAPI,
+  Collection,
+} from "../api/collection";
 import { Button } from "@/components/ui/button";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { BookTextIcon, PlusCircleIcon } from "lucide-react"; // Import icon for the Add Collection button
-
-import { getCollections, createCollectionAPI, Collection } from "../api/collection";
-import CollectionItemCard from "@/components/CollectionItemCard";
-
+import { Check, Trash2 } from "lucide-react";
+import SideNav from "@/components/LandingPage/SideNav";
+import TopBar from "@/components/LandingPage/TopBar";
+import MainContent from "@/components/LandingPage/MainContent";
 
 const LandingPage: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
-
   const [loading, setLoading] = useState(true);
+
+  // Create collection modal
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  // Fetch user’s collections from your API
+  // Edit collection dialog
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingName, setEditingName] = useState("");
+  const [updating, setUpdating] = useState(false);
+
+  const [collectionToDelete, setCollectionToDelete] = useState<number | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const fetchCollections = async () => {
     try {
       const data = await getCollections();
       setCollections(data);
-      if (data.length > 0) {
-        // By default, select the first collection
-        setSelectedCollection(data[0]);
-      }
+      if (data.length > 0) setSelectedCollection(data[0]);
     } catch (error) {
       console.error("Error fetching collections:", error);
     } finally {
@@ -39,165 +47,189 @@ const LandingPage: React.FC = () => {
     fetchCollections();
   }, []);
 
+  // Create
   const handleCreateCollection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCollectionName.trim()) return;
     try {
       const created = await createCollectionAPI(newCollectionName);
-      setCollections([created]); // For single-collection scenario
+      setCollections((prev) => [...prev, created]);
       setSelectedCollection(created);
       setNewCollectionName("");
       setShowCreateModal(false);
-      setShowEmojiPicker(false);
     } catch (error) {
       console.error("Error creating collection:", error);
     }
   };
 
-  const onEmojiClick = (emojiData: EmojiClickData) => {
-    setNewCollectionName((prev) => prev + emojiData.emoji);
-    setShowEmojiPicker(false);
+  // Update
+  const handleUpdateCollection = async (id: number, newName: string) => {
+    try {
+      setUpdating(true);
+      const updated = await updateCollectionAPI(id, newName);
+      setCollections((prev) =>
+        prev.map((col) => (col.id === id ? { ...col, name: updated.name } : col))
+      );
+      if (selectedCollection?.id === id) {
+        setSelectedCollection({ ...selectedCollection, name: updated.name });
+      }
+    } catch (error) {
+      console.error("Error updating collection:", error);
+    } finally {
+      setUpdating(false);
+      setShowEditModal(false);
+    }
   };
 
+  // Delete
+  const handleDeleteCollectionConfirmed = async (id: number) => {
+    try {
+      await deleteCollectionAPI(id);
+      setCollections((prev) => prev.filter((col) => col.id !== id));
+      if (selectedCollection?.id === id) {
+        setSelectedCollection(null);
+      }
+    } catch (error) {
+      console.error("Error deleting collection:", error);
+    } finally {
+      setShowDeleteConfirm(false);
+      setCollectionToDelete(null);
+    }
+  };
+
+  // SideNav callbacks
   const handleSelectCollection = (col: Collection) => {
     setSelectedCollection(col);
+  };
+  const handleOpenCreateModal = () => {
+    setShowCreateModal(true);
+  };
+  const handleEditCollection = (col: Collection) => {
+    setEditingName(col.name || "");
+    setShowEditModal(true);
+  };
+  const handleDeleteCollection = (col: Collection) => {
+    setCollectionToDelete(col.id);
+    setShowDeleteConfirm(true);
   };
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
-      {/* Side Navigation */}
-      <div className="hidden md:flex md:flex-col w-64 border-r border-border">
-        <ScrollArea className="p-4 space-y-4">
-          <div className="flex flex-col space-y-4">
-            <div>
-              <h2 className="text-lg font-semibold mb-2">My Collections</h2>
-              <div className="w-full">
-                {collections.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
-                    No collections yet.
-                  </p>
-                ) : (
-                  collections.map((col) => (
-                    <Button
-                      key={col.id}
-                      variant="ghost"
-                      className={`justify-start w-full flex items-center space-x-1 ${
-                        selectedCollection?.id === col.id ? "bg-gray-100" : ""
-                      }`}
-                      onClick={() => handleSelectCollection(col)}
-                    >
-                      <BookTextIcon size={16} />
-                      <span>{col.name || "Untitled"}</span>
-                    </Button>
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="items-center justify-items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center"
-              onClick={() => setShowCreateModal(true)}
-            >
-              <PlusCircleIcon size={16} /> {/* Icon for Add Collection button */}
-              <span className="text-xs">Add Collection</span>
-            </Button>
-            </div>
-          </div>
-        </ScrollArea>
-      </div>
-
-      {/* Main Content */}
+      <SideNav
+        collections={collections}
+        selectedCollectionId={selectedCollection?.id || null}
+        onSelectCollection={handleSelectCollection}
+        onCreateCollection={handleOpenCreateModal}
+        onEditCollection={handleEditCollection}
+        onDeleteCollection={handleDeleteCollection}
+      />
       <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between p-4">
-          <h1 className="text-xl font-bold">
-            {selectedCollection?.name || "Collection"} 
-          </h1>
-          {selectedCollection && (
-            <Button onClick={() => console.log("Edit Collection")}>
-              Edit Collection
-            </Button>
-          )}
-        </div>
-
-        {/* Content Area */}
-        <div className="p-4 flex-1">
-          {loading ? (
-            <div className="flex items-center justify-center py-10">
-              <p className="text-lg">Loading collection...</p>
-            </div>
-          ) : !selectedCollection ? (
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <p className="text-lg text-muted-foreground">
-                No collection selected. Create one or select from the side nav.
-              </p>
-            </div>
-          ) : selectedCollection.items.length === 0 ? (
-            <Card className="border border-border rounded-md p-6 max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle className="text-2xl">
-                  {selectedCollection.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-muted-foreground text-center">
-                  No items in this collection.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {selectedCollection.items.map((item) => (
-                <CollectionItemCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
-        </div>
+        <TopBar
+          collectionName={selectedCollection?.name}
+          onEditClick={() => setShowEditModal(true)}
+        />
+        <MainContent
+          loading={loading}
+          hasCollectionSelected={!!selectedCollection}
+          collectionItems={selectedCollection?.items || []}
+          onAddItem={() => console.log("Add anime item")}
+        />
       </div>
 
-      {/* Create Collection Modal */}
-      {showCreateModal && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-surface p-6 rounded-md w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Create Collection</h2>
-            <form onSubmit={handleCreateCollection} className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Collection name"
-                value={newCollectionName}
-                onChange={(e) => setNewCollectionName(e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded bg-background text-foreground"
-                required
-              />
-              <div className="flex items-center justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="mr-2"
-                  onClick={() => setShowEmojiPicker((prev) => !prev)}
-                >
-                  {showEmojiPicker ? "Hide Emojis" : "Add Emoji"}
-                </Button>
-                <div className="space-x-2">
-                  <Button variant="outline" onClick={() => setShowCreateModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="bg-primary text-primary-foreground">
-                    Create
-                  </Button>
-                </div>
-              </div>
-              {showEmojiPicker && (
-                <div className="mt-4">
-                  <EmojiPicker onEmojiClick={onEmojiClick} />
-                </div>
-              )}
-            </form>
+      {/* Create Collection Dialog */}
+      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Collection</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateCollection} className="space-y-4 mt-4">
+            <Input
+              type="text"
+              placeholder="Collection name"
+              value={newCollectionName}
+              onChange={(e) => setNewCollectionName(e.target.value)}
+              required
+            />
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowCreateModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-primary text-primary-foreground">
+                Create
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Collection Dialog */}
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Collection</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <Input
+              type="text"
+              value={editingName}
+              onChange={(e) => setEditingName(e.target.value)}
+              placeholder="Collection name"
+            />
+            <div className="flex justify-end space-x-2">
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => {
+                  if (selectedCollection) handleDeleteCollectionConfirmed(selectedCollection.id);
+                  setShowEditModal(false);
+                }}
+              >
+                <Trash2 size={16} />
+              </Button>
+              <Button
+                onClick={async () => {
+                  if (selectedCollection)
+                    await handleUpdateCollection(selectedCollection.id, editingName);
+                }}
+                className="bg-primary text-primary-foreground"
+              >
+                {updating ? (
+                  <div className="w-6 h-6 border-2 border-t-2 border-t-primary rounded-full animate-spin" />
+                ) : (
+                  <Check size={16} />
+                )}
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mt-4">
+            Are you sure you want to delete this collection? This action cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (collectionToDelete !== null) {
+                  handleDeleteCollectionConfirmed(collectionToDelete);
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

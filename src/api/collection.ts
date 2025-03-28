@@ -22,7 +22,7 @@ export const getCollections = async (): Promise<Collection[]> => {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", // ensures cookies are sent
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("Failed to fetch collections");
@@ -56,8 +56,6 @@ export const createCollectionAPI = async (
   }
 };
 
-// src/api/collection.ts
-
 export const addItemToCollectionAPI = async (
   collectionId: number,
   payload: { anilistId: number; animeTitle: string }
@@ -80,6 +78,75 @@ export const addItemToCollectionAPI = async (
     return await response.json();
   } catch (error) {
     console.error("Error adding item to collection:", error);
+    throw error;
+  }
+};
+
+export const updateCollectionAPI = async (
+  id: number,
+  name: string
+): Promise<Collection> => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/collections/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ name }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update collection");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating collection:", error);
+    throw error;
+  }
+};
+
+export const deleteCollectionAPI = async (
+  id: number
+): Promise<{ message: string }> => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/collections/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete collection");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+    throw error;
+  }
+};
+
+export const removeItemFromCollectionAPI = async (
+  collectionId: number,
+  itemId: number
+): Promise<{ message: string }> => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/collections/${collectionId}/items/${itemId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to remove item from collection");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error removing item from collection:", error);
     throw error;
   }
 };

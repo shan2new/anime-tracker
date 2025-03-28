@@ -51,8 +51,8 @@ const NavBar: React.FC = () => {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Header */}
         <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-14" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="h-8" />
+          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-8" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="h-6" />
         </div>
         {/* Center: Search */}
         <div className="flex-1 px-4">
@@ -62,7 +62,7 @@ const NavBar: React.FC = () => {
               placeholder="Search anime..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition"
+              className="w-full px-3 rounded-lg border border-border bg-background text-foreground font-normal focus:outline-none focus:ring-2 focus:ring-ring transition"
             />
             {(searchResults.length > 0 || loading) && (
               <ul className="absolute z-30 w-full bg-background border border-border mt-2 rounded-lg shadow-lg transition-all">
