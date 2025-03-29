@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import AnimeList from "./MainContent/AnimeList";
 import EmptyState from "./MainContent/EmptyState";
 import AddAnimeDialog from "./MainContent/AddAnimeDialog";

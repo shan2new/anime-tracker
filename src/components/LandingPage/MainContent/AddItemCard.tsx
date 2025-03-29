@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, PlusCircleIcon } from "lucide-react";
+import { PlusCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AddItemCardProps {

@@ -21,9 +21,8 @@ const NavBar: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
 
-  // Your existing search logic for desktop (if needed)
-
   const handleSelectAnime = (id: number) => {
+    setLoading(false);
     navigate(`/anime/${id}`);
     setSearch("");
     setSearchResults([]);
@@ -40,7 +39,7 @@ const NavBar: React.FC = () => {
         {/* Left: Logo */}
         <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
           <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="md:h-8 h-16" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8 w-100" />
         </div>
         {/* Center: Search for desktop */}
         <div className="flex-1 px-4">
@@ -94,7 +93,7 @@ const NavBar: React.FC = () => {
           </div>
         </div>
         {/* Right: Profile */}
-        <div className="flex-1 flex justify-end">
+        <div className="justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

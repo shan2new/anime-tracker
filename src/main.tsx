@@ -11,14 +11,16 @@ import Session from "supertokens-auth-react/recipe/session";
 SuperTokens.init({
   appInfo: {
     appName: "Anime Tracker",
-    apiDomain: import.meta.env.VITE_API_DOMAIN || "http://localhost:3001",
+    apiDomain: import.meta.env.VITE_AUTH_API_DOMAIN || "http://localhost:3001",
     websiteDomain: import.meta.env.VITE_WEBSITE_DOMAIN || "http://localhost:5173",
     apiBasePath: "/auth",
     websiteBasePath: "/auth",
   },
   recipeList: [
-    EmailPassword.init(), // Initialize EmailPassword recipe
-    Session.init(),        // Initialize session recipe
+    EmailPassword.init(),
+    Session.init({
+      sessionTokenBackendDomain: import.meta.env.VITE_API_HOST || "localhost",
+    }),
   ],
 });
 

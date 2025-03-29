@@ -14,6 +14,12 @@ import SideNav from "@/components/LandingPage/SideNav";
 import TopBar from "@/components/LandingPage/TopBar";
 import MainContent from "@/components/LandingPage/MainContent";
 
+interface AnimeResult {
+  id: number;
+  title: { english?: string; romaji: string };
+  coverImage?: { extraLarge?: string; large?: string; medium?: string };
+}
+
 const LandingPage: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
@@ -129,7 +135,8 @@ const LandingPage: React.FC = () => {
           loading={loading}
           hasCollectionSelected={!!selectedCollection}
           collectionItems={selectedCollection?.items || []}
-          collectionCreateHandler={handleOpenCreateModal}          
+          collectionCreateHandler={handleOpenCreateModal}      
+          onAddAnimeToCollection={async (pending: AnimeResult[]) => {console.log(pending)}}    
         />
       </div>
 

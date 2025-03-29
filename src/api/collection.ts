@@ -15,9 +15,11 @@ export interface Collection {
   items: CollectionItem[];
 }
 
+const API_PREFIX = import.meta.env.VITE_API_DOMAIN || "http://localhost:3000";
+
 export const getCollections = async (): Promise<Collection[]> => {
   try {
-    const response = await fetch("http://localhost:3000/api/collections", {
+    const response = await fetch(API_PREFIX + "/api/collections", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +40,7 @@ export const createCollectionAPI = async (
   name: string
 ): Promise<Collection> => {
   try {
-    const response = await fetch("http://localhost:3000/api/collections", {
+    const response = await fetch(API_PREFIX + "/api/collections", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,7 +64,7 @@ export const addItemToCollectionAPI = async (
 ): Promise<CollectionItem> => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/collections/${collectionId}/items`,
+      `${API_PREFIX}/api/collections/${collectionId}/items`,
       {
         method: "POST",
         headers: {
@@ -87,7 +89,7 @@ export const updateCollectionAPI = async (
   name: string
 ): Promise<Collection> => {
   try {
-    const response = await fetch(`http://localhost:3000/api/collections/${id}`, {
+    const response = await fetch(`${API_PREFIX}/api/collections/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +111,7 @@ export const deleteCollectionAPI = async (
   id: number
 ): Promise<{ message: string }> => {
   try {
-    const response = await fetch(`http://localhost:3000/api/collections/${id}`, {
+    const response = await fetch(`${API_PREFIX}/api/collections/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +134,7 @@ export const removeItemFromCollectionAPI = async (
 ): Promise<{ message: string }> => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/collections/${collectionId}/items/${itemId}`,
+      `${API_PREFIX}/api/collections/${collectionId}/items/${itemId}`,
       {
         method: "DELETE",
         headers: {
