@@ -1,5 +1,5 @@
 import React from "react";
-import { PlusCircleIcon, Tv, Tv2Icon, TvMinimalIcon } from "lucide-react";
+import { PlusCircleIcon, Tv} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
