@@ -1,3 +1,4 @@
+// src/pages/LoginPage.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Session from "supertokens-web-js/recipe/session";
@@ -49,7 +50,7 @@ const LoginPage: React.FC = () => {
       style={{ backgroundImage: "url('/animetracker_bg.png')" }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="xs:my-12 relative z-10 md:w-full max-w-md space-y-8 p-10 bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg">
+      <div className="xs:my-12 relative z-10 md:w-full max-w-md space-y-8 p-10 bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg animate-fadeIn">
         <div className="flex justify-center">
           <img src="/login_logo.png" alt="Anime Tracker Logo" className="h-64 w-auto" />
         </div>
@@ -67,7 +68,7 @@ const LoginPage: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all duration-300"
                 placeholder="Email address"
               />
             </div>
@@ -83,7 +84,7 @@ const LoginPage: React.FC = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all duration-300"
                 placeholder="Password"
               />
             </div>
@@ -95,7 +96,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white transition-all duration-300 ${
                 loading
                   ? "bg-gray-400"
                   : "bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
