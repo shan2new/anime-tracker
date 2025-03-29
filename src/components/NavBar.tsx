@@ -38,8 +38,8 @@ const NavBar: React.FC = () => {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Logo */}
         <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="md:h-8 h-16" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8 w-100" />
+          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="md:h-12 h-16" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8 w-100 md:w-64" />
         </div>
         {/* Center: Search for desktop */}
         <div className="flex-1 px-4">

@@ -10,7 +10,7 @@ const Layout: React.FC = () => {
       <header className="sticky top-0 z-50 bg-surface bg-opacity-95 backdrop-blur-sm border-b border-border">
         <NavBar />
       </header>
-      <main className="max-w-7xl mx-auto">
+      <main>
         <Outlet />
         <Toaster />        
       </main>

@@ -7,6 +7,20 @@ import { WatchListProvider } from './context/WatchListContext';
 import SuperTokens from "supertokens-auth-react";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
+import { logEvent } from 'firebase/analytics';
+import { analytics } from './firebaseConfig';
+
+
+if (analytics) {
+  // Log a page_view event
+  logEvent(analytics, 'page_view', {
+    page_title: document.title,
+    page_location: window.location.href,
+    page_path: window.location.pathname,
+  });
+}
+
+
 
 SuperTokens.init({
   appInfo: {

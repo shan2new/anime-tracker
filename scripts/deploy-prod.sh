@@ -7,7 +7,7 @@ HOST=13.201.130.192
 REMOTE_DIR=/home/ubuntu/webapp
 
 # Files and directories to copy
-FILES="dist package.json package-lock.json .env vite.config.ts "
+FILES="dist package.json package-lock.json vite.config.ts"
 
 echo "Deploying files to ${USER}@${HOST}:${REMOTE_DIR}..."
 
