@@ -3,12 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { searchAnime } from "@/api/anilist";
 
@@ -49,17 +45,17 @@ const MobileSearchDialog: React.FC<MobileSearchDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-auto p-1">
-        <div>
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-auto p-0">
+        <div className="space-y-3">
           <Input
             type="text"
             placeholder="Search anime..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white rounded-none border-0 text-sm focus:outline-none focus-visible:ring-0"
+            className="w-full bg-white border-b border-gray-300 rounded-none"
           />
           {loading && (
-            <p className="p-2 text-sm text-muted-foreground">Searching...</p>
+            <p className="text-sm text-muted-foreground">Searching...</p>
           )}
           {!loading && searchQuery.trim() !== "" && searchResults.length === 0 && (
             <p className="text-sm p-3 text-muted-foreground">
@@ -88,7 +84,7 @@ const MobileSearchDialog: React.FC<MobileSearchDialogProps> = ({
                         className="w-8 h-12 object-cover rounded"
                       />
                     )}
-                    <span className="text-sm">{anime.title.english || anime.title.romaji}</span>
+                    <span>{anime.title.english || anime.title.romaji}</span>
                   </div>
                 </div>
                 {index < searchResults.length - 1 && <Separator />}

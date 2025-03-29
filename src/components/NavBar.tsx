@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Session from 'supertokens-web-js/recipe/session';
 import MobileSearchDialog from '@/components/Navbar/MobileSearchDialog'
-import { SearchIcon } from "lucide-react";
+import { LogOutIcon, SearchIcon, Settings2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 const NavBar: React.FC = () => {
@@ -38,8 +38,18 @@ const NavBar: React.FC = () => {
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Logo */}
         <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="md:h-12 h-16" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 h-8 w-100 md:w-64" />
+          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-12" />
+          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 w-100 md:w-64" />
+                    {/* Mobile: Show search icon that opens MobileSearchDialog */}
+                    <div className="sm:hidden">
+            <Button
+              variant="ghost"
+              onClick={() => setShowMobileSearch(true)}
+              className="p-2"
+            >
+              <SearchIcon size={48} />
+            </Button>
+          </div>
         </div>
         {/* Center: Search for desktop */}
         <div className="flex-1 px-4">
@@ -81,16 +91,6 @@ const NavBar: React.FC = () => {
               </ul>
             )}
           </div>
-          {/* Mobile: Show search icon that opens MobileSearchDialog */}
-          <div className="sm:hidden flex justify-center">
-            <Button
-              variant="ghost"
-              onClick={() => setShowMobileSearch(true)}
-              className="p-2"
-            >
-              <SearchIcon size={48} />
-            </Button>
-          </div>
         </div>
         {/* Right: Profile */}
         <div className="justify-end">
@@ -116,13 +116,13 @@ const NavBar: React.FC = () => {
                 </svg>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-40 bg-background border border-border rounded-lg shadow-lg">
-              <DropdownMenuItem onSelect={() => toast.info("Unsupported. Coming soon!")}>
-                Settings
+            <DropdownMenuContent className="w-40 bg-background border border-border rounded-lg shadow-lg" align="center">
+              <DropdownMenuItem onSelect={() => toast.info("Unsupported. Coming soon!")} className="w-100 text-center">
+                <Settings2Icon />  Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={logout}>
-                Logout
+              <DropdownMenuItem onSelect={logout} className="text-center">
+                <LogOutIcon/> Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
