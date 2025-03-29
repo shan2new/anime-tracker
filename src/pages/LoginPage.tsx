@@ -1,11 +1,6 @@
-// src/pages/LoginPage.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Session from "supertokens-web-js/recipe/session";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { signIn } from "supertokens-auth-react/recipe/emailpassword";
 
 const LoginPage: React.FC = () => {
@@ -13,8 +8,8 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Prevent accessing login page if a session already exists.
   useEffect(() => {
     async function checkSession() {
       if (await Session.doesSessionExist()) {
@@ -26,6 +21,8 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       const response = await signIn({
         formFields: [
@@ -33,7 +30,6 @@ const LoginPage: React.FC = () => {
           { id: "password", value: password },
         ],
       });
-      console.log("SignIn response:", response);
       if (response.status === "OK") {
         navigate("/");
       } else {
@@ -42,48 +38,74 @@ const LoginPage: React.FC = () => {
     } catch (err) {
       setError("An error occurred during sign in.");
       console.error("Sign in error", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
-      <Card className="w-full max-w-md bg-surface shadow-lg rounded-lg">
-        <CardContent className="space-y-6 p-6">
-          <h1 className="text-3xl font-bold text-center">Login</h1>
-          {error && <p className="text-destructive text-center">{error}</p>}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="email" className="block text-sm font-medium">
-                Email
-              </Label>
-              <Input
-                id="email"
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      style={{ backgroundImage: "url('/animetracker_bg.png')" }}
+    >
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="xs:my-12 relative z-10 md:w-full max-w-md space-y-8 p-10 bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg">
+        <div className="flex justify-center">
+          <img src="/login_logo.png" alt="Anime Tracker Logo" className="h-64 w-auto" />
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email-address"
+                name="email"
                 type="email"
+                autoComplete="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
+                className="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
               />
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="password" className="block text-sm font-medium">
+            <div>
+              <label htmlFor="password" className="sr-only">
                 Password
-              </Label>
-              <Input
+              </label>
+              <input
                 id="password"
+                name="password"
                 type="password"
+                autoComplete="current-password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
+                className="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
               />
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary-dark transition">
-              Login
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+          {error && (
+            <p className="mt-2 text-center text-sm text-red-500">{error}</p>
+          )}
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                loading
+                  ? "bg-gray-400"
+                  : "bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              }`}
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
