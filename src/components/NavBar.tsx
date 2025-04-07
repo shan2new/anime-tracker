@@ -29,8 +29,13 @@ const NavBar: React.FC = () => {
   };
 
   async function logout() {
-    await Session.signOut();
-    navigate("/login");
+    try {
+      await Session.signOut();
+    } catch (error) {
+      console.warn("Error signing out:", error);
+    } finally {
+      navigate("/login");
+    }
   }
 
   return (
