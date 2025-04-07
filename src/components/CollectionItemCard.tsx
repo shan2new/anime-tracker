@@ -99,7 +99,7 @@ const CollectionItemCard: React.FC<Props> = ({ item }) => {
   return (
     <div
       onClick={handleClick}
-      className="border border-border rounded-md overflow-hidden hover:shadow-md cursor-pointer transition flex flex-col gap-3 pb-2"
+      className="border border-border rounded-md overflow-hidden hover:shadow-md cursor-pointer transition flex flex-col pb-2 max-w-sm"
     >
       <div className="relative">
         {coverImg ? (

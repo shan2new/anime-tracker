@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,11 +37,15 @@ const NavBar: React.FC = () => {
     <nav className="w-full bg-surface">
       <div className="flex items-center justify-between px-4 py-3">
         {/* Left: Logo */}
-        <div className="flex-1 flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-          <img src="/anime_tracker_logo.png" alt="Anime Tracker Logo" className="h-12" />
-          <img src="/anime_tracker_text.png" alt="Anime Tracker Text" className="md:h-6 w-100 md:w-64" />
-                    {/* Mobile: Show search icon that opens MobileSearchDialog */}
-                    <div className="sm:hidden">
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
+          <span className="righteous-regular md:text-3xl text-2xl" style={{ color: '#995500' }}>
+            ANIME
+          </span>
+          <span className="righteous-regular md:text-3xl text-2xl px-2 rounded border-2" style={{ color: '#FFA733', borderColor: '#E58A14' }}>
+            TRACKER
+          </span>
+          {/* Mobile: Show search icon that opens MobileSearchDialog */}
+          <div className="sm:hidden">
             <Button
               variant="ghost"
               onClick={() => setShowMobileSearch(true)}
@@ -52,7 +56,7 @@ const NavBar: React.FC = () => {
           </div>
         </div>
         {/* Center: Search for desktop */}
-        <div className="flex-1 px-4">
+        <div className="w-100">
           <div className="relative hidden sm:block">
             <Input
               type="text"

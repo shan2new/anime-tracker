@@ -10,7 +10,7 @@ interface AnimeListProps {
 
 const AnimeList: React.FC<AnimeListProps> = ({ items, onAddNew }) => {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 transition-all px-4 py-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6 transition-all px-4 py-4">
       {items.map((item) => (
         <CollectionItemCard key={item.id} item={item} />
       ))}
