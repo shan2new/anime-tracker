@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
       style={{ backgroundImage: "url('/animetracker_bg.png')" }}
     >
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="xs:my-12 relative z-10 md:w-full max-w-md space-y-8 p-10 bg-opacity-20 backdrop-blur-3xl rounded-lg shadow-lg animate-fadeIn">
+      <div className="xs:my-12 relative z-10 md:w-full max-w-md space-y-8 p-10 bg-opacity-20 rounded-lg shadow-lg animate-fadeIn bg-accent-foreground">
         <div className="flex justify-center">
           <img src="/login_logo.png" alt="Anime Tracker Logo" className="h-64 w-auto" />
         </div>
