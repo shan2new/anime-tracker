@@ -1,9 +1,8 @@
-
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig =  {
+const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -13,10 +12,14 @@ const firebaseConfig =  {
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-const app = initializeApp(firebaseConfig);
+const app = import.meta.env.VITE_APP_ENV === "PROD" ? initializeApp(firebaseConfig) : null;
 
-const analytics = typeof window !== "undefined" ? getAnalytics(app) : null;
+// Enable analytics only in production and in the browser
+const analytics =
+    app && typeof window !== "undefined"
+        ? getAnalytics(app)
+        : null;
 
-const db = getFirestore(app);
+const db = app ? getFirestore(app) : null;
 
 export { app, analytics, db };
