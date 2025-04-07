@@ -13,6 +13,18 @@ interface MobileSearchDialogProps {
   onOpenChange: (open: boolean) => void;
   onSelectAnime: (id: number) => void;
 }
+interface AnimeResult {
+  id: number;
+  coverImage?: {
+    extraLarge?: string;
+    large?: string;
+    medium?: string;
+  }
+  title: {
+    english?: string;
+    romaji?: string;
+  };
+}
 
 const MobileSearchDialog: React.FC<MobileSearchDialogProps> = ({
   open,
@@ -20,7 +32,7 @@ const MobileSearchDialog: React.FC<MobileSearchDialogProps> = ({
   onSelectAnime,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<AnimeResult[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Debounced search
