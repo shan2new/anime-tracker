@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 const Layout: React.FC = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-50 bg-surface bg-opacity-95 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-surface backdrop-blur-xl border-b border-border">
         <NavBar />
       </header>
       <main>
